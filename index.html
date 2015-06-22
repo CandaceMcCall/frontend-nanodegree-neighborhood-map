@@ -8,8 +8,9 @@
 </head>
 <body>
 	<!--<div id="container">-->
+    <div id="container">
 	<div id="search-div">
-	    <p>Search: <input id="search" data-bind="textInput: searchFilter" /></p>
+	    <p>Search (by FourSquare): <input id="search" data-bind="textInput: searchFilter" /></p>
 	    <h4 data-bind="text: errorMessage"></h4>
 	    <ul data-bind="foreach: restaurantList">
 		<li data-bind="visible: show, text: name, click: $parent.setRestaurant"></li>
@@ -17,6 +18,7 @@
 	</div>
 	<div id="map">
 	</div>
+    </div>
 	<!--</div>-->
     <script src="js/libs/knockout-3.3.0.js"></script>
     <script src="js/libs/jquery.min.js"></script>

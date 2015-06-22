@@ -31,7 +31,7 @@ var	map;
  */
 function createOfficeContent() {
     var contentString = '<div id="content">'+
-      '<h4>'+'ONLINE Computering, Inc.'+'</h4>'+
+      '<h4>'+'ONLINE Computing, Inc.'+'</h4>'+
       '<p>'+'MasterTools ERP Software'+'</p>'+
       '<p><a href="'+'http://www.olcinc.com'+'">Website</a></p>'+
       '</div>';
