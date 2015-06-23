@@ -171,7 +171,7 @@ function initializeMap() {
      * Create Map with focus on MasterTools office.  Attach to 
      * <div id="map">
      */
-    map = new google.maps.Map(document.querySelector('#map'), mapOptions);
+    map = new google.maps.Map(document.querySelector('#map-canvas'), mapOptions);
     /*
      * Create marker for office of MasterTools ERP Software
      */
@@ -326,7 +326,7 @@ var model = {
 		listViewModel.restaurantList.push(new Restaurant(restaurantItem));
 	    });
 	}).error(function(e) {
-	    listViewModel.errorMessage('FourSquare search could not be loaded');
+	    listViewModel.errorMessage('FourSquare search could not be executed');
 	});
     }
 };
@@ -372,6 +372,16 @@ var Restaurant = function(data) {
     map.setCenter(bounds.getCenter());
 };
 /*
+ * Initialize map when page loads.
+ */
+function loadMapScript() {
+  var script = document.createElement('script');
+  script.type = 'text/javascript';
+  script.src = 'http://maps.googleapis.com/maps/api/js?libraries=places' +
+      '&callback=initializeMap';
+  document.body.appendChild(script);
+}
+/*
  * Credentials for FourSquare
  * Latitude and longitude for office of Online Computing, Inc.
  */
@@ -385,10 +395,12 @@ var Restaurant = function(data) {
     model.initialize(client_id,client_secret,latitude,longitude);
     var listViewModel = new ViewModel();
     ko.applyBindings(listViewModel);
+
 /*
- * Initialize map when page loads.
+ * Load map script
  */
-    window.addEventListener('load', initializeMap);
+    window.onload = loadMapScript;
+    //window.addEventListener('load', initializeMap);
 /*
  * Vanilla JS way to listen for resizing of the window
  * and adjust map bounds

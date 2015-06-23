@@ -35,7 +35,7 @@ html, body {
     padding: 0;
 }
 
-#map {
+#map-canvas {
     position: absolute;
     width: 100%;
     height: 100%;
@@ -44,7 +44,7 @@ html, body {
     #search-div {
 	width: 100%;
     }
-    #map {
+    #map-canvas {
 	width: 100%;
     }
 }
@@ -52,7 +52,7 @@ html, body {
     #search-div {
 	width: 25%;
     }
-    #map {
+    #map-canvas {
 	width: 75%;
     }
 }
