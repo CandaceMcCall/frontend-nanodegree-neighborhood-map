@@ -11,3 +11,10 @@ string to narrow your choices.  You can click on a restaurant to see
 more info on a restaurant or click on a map marker.   Within the popup
 window, you will see a link to the restaurant website and a link to
 the menu for the restaurant.
+
+Third party apis:
+
+FourSquare
+GoogleMaps
+offline.js (https://github.com/hubspot/offline)
+sidebar.js (https://github.com/asyraf9/bootstrap-sidebar)

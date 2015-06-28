@@ -9,13 +9,30 @@
  *
  * Date		Description
  * 06/08/2015	Initial draft
+ * 06/25/2015	Add snippet of code to when resizing window
+ *		to set height of map
+ *		Add use strict
+ *		Open only one window at a time
+ * 06/27/2015	Don't add urls to content string if null
+ * 06/28/2015	Use setCenter rather than pan to marker position
+ *
  *
  */
 
+"use strict";
 /*
  * Declare global map variable
  */
-var	map;    
+    var	map;    
+    var	listViewModel;    
+/*
+* Define bounds for map
+*/
+    window.mapBounds = new google.maps.LatLngBounds();
+/*
+ * Create global info Window
+ */
+    var infoWindow = new google.maps.InfoWindow();
 /*************************************************************
  *
  * Helper Functions
@@ -36,7 +53,7 @@ function createOfficeContent() {
       '<p><a href="'+'http://www.olcinc.com'+'">Website</a></p>'+
       '</div>';
     return contentString;
-};
+}
 /*
  * Function:  showOfficeInfo
  *
@@ -52,13 +69,7 @@ function showOfficeInfo(marker,contentString) {
     /*
      * Pan to the position of the marker
      */
-    map.panTo(marker.getPosition());
-    /*
-     * Create GoogleMaps popup window with content string
-     */
-    var infoWindow = new google.maps.InfoWindow({
-      content: contentString
-    });
+    map.setCenter(marker.getPosition());
     /*
      * Bounce the marker to show that it's state has changed
      * Set timeout so it will quit bouncing after a couple seconds
@@ -66,10 +77,14 @@ function showOfficeInfo(marker,contentString) {
     toggleBounce(marker);
     setTimeout(function(){ toggleBounce(marker); }, 1400);
     /*
+     * Set content string on GoogleMaps popup window 
+     */
+    infoWindow.setContent(contentString);
+    /*
      * Open popup window.
      */
     infoWindow.open(map,marker);
-};
+}
 /*
  *
  * Function:  createRestaurantContent
@@ -84,12 +99,20 @@ function createRestaurantContent(restaurant) {
     var contentString = '<div id="content">'+
       '<h4>'+restaurant.name()+'</h4>'+
       '<p>'+restaurant.address()+
-      '<br>'+restaurant.formattedPhone()+'</p>'+
-      '<p><a href="'+restaurant.url()+'">Website</a></p>'+
-      '<p><a href="'+restaurant.menuUrl()+'">Menu</a></p>'+
-      '</div>';
+      '<br>'+restaurant.formattedPhone()+'</p>';
+    if (restaurant.url() != null) {
+	contentString = contentString.concat(
+	'<p><a href="'+restaurant.url()+'">Website</a></p>');
+    }
+    if (restaurant.menuUrl() !=null) {
+	contentString = contentString.concat(
+      '<p><a href="'+restaurant.menuUrl()+'">Menu</a></p>');
+    }
+    contentString = contentString.concat(
+		    '<p>Info provided by FourSquare</p>');
+    contentString = contentString.concat('</div>');
     return contentString;
-};
+}
 /*
  * Function:  showRestaurantInfo
  *
@@ -104,15 +127,9 @@ function createRestaurantContent(restaurant) {
  */
 function showRestaurantInfo(marker,contentString) {
     /*
-     * Pan to the position of the marker
+     * Set Center to the position of the marker
      */
-    map.panTo(marker.getPosition());
-    /*
-     * Create GoogleMaps popup window with content string
-     */
-    var infoWindow = new google.maps.InfoWindow({
-      content: contentString
-    });
+    map.setCenter(marker.getPosition());
     /*
      * Bounce the marker to show that it's state has changed
      * Set timeout so it will quit bouncing after a couple seconds
@@ -120,10 +137,14 @@ function showRestaurantInfo(marker,contentString) {
     toggleBounce(marker);
     setTimeout(function(){ toggleBounce(marker); }, 1400);
     /*
+     * Set content string of GoogleMaps popup window 
+     */
+    infoWindow.setContent(contentString);
+    /*
      * Open popup window.
      */
     infoWindow.open(map,marker);
-};
+}
 /*
  * Function: toggleBounce
  *
@@ -142,7 +163,7 @@ function toggleBounce(marker) {
     } else {
 	marker.setAnimation(google.maps.Animation.BOUNCE);
     }
-};
+}
 /*
  * Function:	initializeMap
  *
@@ -154,7 +175,7 @@ function initializeMap() {
     /*
      * Latitude and Longitude for MasterTools ERP Software
      */
-    var officLatlng;
+    var officeLatlng;
     try {
 	officeLatlng = new google.maps.LatLng(36.035433,-86.80515);
     } catch (e) {
@@ -191,8 +212,10 @@ function initializeMap() {
 	    showOfficeInfo(marker,content_string);
 	}
     })(marker,content_string));
-
-    window.mapBounds = new google.maps.LatLngBounds();
+    /*
+     * Now, let's initialize Four Square data model of nearby restaurants
+     */
+    initializeFourSquare();
 }
 
 /*
@@ -200,23 +223,24 @@ function initializeMap() {
  */
 var ViewModel = function() {
     var self = this;
-    this.restaurantList = ko.observableArray([]);
-    this.searchFilter = ko.observable("");
-    this.errorMessage = ko.observable("");
+    self.restaurantList = ko.observableArray([]);
+    self.searchFilter = ko.observable("");
+    self.errorMessage = ko.observable("");
     // Following for debugging
     //this.resultSearch = ko.computed(function() {
 	//return self.searchFilter();
     //},this);
-    this.getResultList = ko.computed(function() {
+    self.getResultList = ko.computed(function() {
 	/*
 	 * If non-empty search filter, then filter
 	 * list
 	 */
+	var restaurantListLength = self.restaurantList().length;
 	if (self.searchFilter().length > 0 ) {
 	    /*
 	     * Hide all by setting show property to false
 	     */
-	    for (var i = 0; i < self.restaurantList().length; i++) {
+	    for (var i = 0; i < restaurantListLength; i++) {
 		self.restaurantList()[i].show(false);
 		self.restaurantList()[i].marker.setMap(null);
 	    }
@@ -224,7 +248,7 @@ var ViewModel = function() {
 	     * Use ajax grep to get list of restaurants that match
 	     * filter
 	     */
-	    filteredList = $.grep(self.restaurantList(), function(restaurant) {
+	    var filteredList = $.grep(self.restaurantList(), function(restaurant) {
 		var filter = self.searchFilter().toLowerCase();
 		return (restaurant.name().toLowerCase().indexOf(filter) != -1);
 	    });
@@ -232,9 +256,9 @@ var ViewModel = function() {
 	     * There may be a more elegant way, but for each filtered item
 	     * set property show to true in observed restaurant array
 	     */
-	    for (i = 0; i < filteredList.length; i++) {
-		console.log(filteredList[i].name());
-		for (var j = 0; j < self.restaurantList().length; j++) {
+	    var filteredListLength = filteredList.length;
+	    for (i = 0; i < filteredListLength; i++) {
+		for (var j = 0; j < restaurantListLength; j++) {
 		    /* 
 		     * Check that names match
 		     */
@@ -248,7 +272,7 @@ var ViewModel = function() {
 	    /*
 	     * Show all by setting show property to true
 	     */
-	    for (var i = 0; i < self.restaurantList().length; i++) {
+	    for (var i = 0; i < restaurantListLength; i++) {
 		self.restaurantList()[i].show(true);
 		self.restaurantList()[i].marker.setMap(map);
 	    }
@@ -261,7 +285,7 @@ var ViewModel = function() {
 	var content_string = createRestaurantContent(clickedRestaurant);
 	showRestaurantInfo(clickedRestaurant.marker,content_string);
     };
-};
+}
 /*
  * Restaurant Model
  *
@@ -283,7 +307,7 @@ var model = {
 	this.distance = distance;
     },
     initialize: function(client_id,client_secret,latitude,longitude) {
-	var miles = 3;		// Look in 3 mile radius
+	var miles = 4;		// Look in 4 mile radius
 	var meters = miles * 1609.344;
 	var foursquareURL = 'https://api.foursquare.com/v2/venues/search' + 
 	    '?client_id=' + client_id +
@@ -296,9 +320,9 @@ var model = {
 	 * Call FourSquare
 	 */
 	$.getJSON(foursquareURL, function (data) {
-	    console.log(data);
 	    var restaurants = data.response.venues;
-	    for (var i = 0; i < restaurants.length; i++) {
+	    var restaurantsLength = restaurants.length;
+	    for (var i = 0; i < restaurantsLength; i++) {
 		var foursquareRestaurant = restaurants[i];
 		var menuURL = '';
 		var mobileMenuURL = '';
@@ -320,7 +344,6 @@ var model = {
 			menuURL,
 			mobileMenuURL,
 			foursquareRestaurant.location.distance));
-		//console.log("name: "+foursquareRestaurant.name);
 	    };
 	    model.restaurantList.forEach(function(restaurantItem) {
 		listViewModel.restaurantList.push(new Restaurant(restaurantItem));
@@ -329,7 +352,7 @@ var model = {
 	    listViewModel.errorMessage('FourSquare search could not be executed');
 	});
     }
-};
+}
 /*
  * Restaurant View
  */
@@ -370,17 +393,22 @@ var Restaurant = function(data) {
      * center the map
      */
     map.setCenter(bounds.getCenter());
-};
+}
 /*
  * Initialize map when page loads.
  */
-function loadMapScript() {
-  var script = document.createElement('script');
-  script.type = 'text/javascript';
-  script.src = 'http://maps.googleapis.com/maps/api/js?libraries=places' +
-      '&callback=initializeMap';
-  document.body.appendChild(script);
-}
+//function loadMapScript() {
+  //var script = document.createElement('script');
+  //script.type = 'text/javascript';
+  //script.src = 'http://maps.googleapis.com/maps/api/js?libraries=places' +
+      //'&callback=initializeMap';
+  //document.body.appendChild(script);
+//}
+/*
+ * Initialize FourSquare Restaurant models
+ *
+ */
+function initializeFourSquare() {
 /*
  * Credentials for FourSquare
  * Latitude and longitude for office of Online Computing, Inc.
@@ -390,17 +418,18 @@ function loadMapScript() {
     var latitude = '36.035443';
     var longitude = '-86.80515';
 /*
- * Initialize mode
+ * Initialize model
  */
     model.initialize(client_id,client_secret,latitude,longitude);
-    var listViewModel = new ViewModel();
+    listViewModel = new ViewModel();
     ko.applyBindings(listViewModel);
+}
 
 /*
  * Load map script
  */
-    window.onload = loadMapScript;
-    //window.addEventListener('load', initializeMap);
+    //window.onload = loadMapScript;
+    window.addEventListener('load', initializeMap);
 /*
  * Vanilla JS way to listen for resizing of the window
  * and adjust map bounds
@@ -411,3 +440,9 @@ function loadMapScript() {
      */
 	map.fitBounds(mapBounds);
     });
+    $(window).resize(function () {
+	var h = $(window).height(),
+	    offsetTop = 0; // Calculate the top offset
+	$('#map-canvas').css('height', (h - offsetTop));
+    }).resize();
+

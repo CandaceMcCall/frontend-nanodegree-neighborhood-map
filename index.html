@@ -2,26 +2,63 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Neighborhood Map Project </title>
-    <link href="css/style.css" rel="stylesheet" type="text/css">
+    <link href="css/bootstrap.min.css" rel="stylesheet" >
+    <link href="css/sidebar.css" rel="stylesheet" >
+    <link href="css/offline-theme-chrome.css" rel="stylesheet" >
+    <link href="css/offline-language-english.css" rel="stylesheet" >
+    <link href="css/style.css" rel="stylesheet" >
+    <script src="js/libs/offline.min.js"></script>
+    <script>
+	    Offline.options = {checks: {image: {url: 'https://github.com/CandaceMcCall/frontend-nanodegree-neighborhood-map/tree/master/images/mt.png'
+	    }, active: 'image'}};
+    </script>
+    
+    
+    <!--<script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?key=AIzaSyC3AXOCFlhGdk2BSVYXJoEzBeeFyOFBW2E">-->
+    
 </head>
 <body>
-	<!--<div id="container">-->
-    <div id="container">
-	<div id="search-div">
-	    <p>Search (by FourSquare): <input id="search" data-bind="textInput: searchFilter" /></p>
-	    <h4 data-bind="text: errorMessage"></h4>
-	    <ul data-bind="foreach: restaurantList">
-		<li data-bind="visible: show, text: name, click: $parent.setRestaurant"></li>
-	    </ul>
+    <div class="navbar navbar-static navbar-default navbar-fixed-top">
+	<div class="container-fluid">
+	    <div class="navbar-header">
+		<!-- Hamburger button -->
+		<button type="button" class="navbar-toggle toggle-left hidden-md hidden-lg" data-toggle="sidebar" data-target=".sidebar-left">
+		    <span class="icon-bar"></span>
+		    <span class="icon-bar"></span>
+		    <span class="icon-bar"></span>
+		</button>
+		<a class="navbar-brand" href="#">Neighborhood Map Project</a>
+	    </div>
 	</div>
-	<div id="map-canvas">
+    </div>
+    <!-- Start of page content -->
+    <div class="container-fluid">
+	<div class="row">
+	    <div class="col-xs-7 col-sm-3 col-md-3 sidebar sidebar-left sidebar-animate sidebar-md-show">
+		<form role="form">
+		    <div class="form-group">
+			<input id="search" class="form-control" data-bind="textInput: searchFilter" placeholder="Enter search"/>
+		    </div>
+		    <h4 data-bind="text: errorMessage"></h4>
+		    <ul class="nav navbar-stacked" data-bind="foreach: restaurantList">
+			<li data-bind="visible: show, text: name, click: $parent.setRestaurant"></li>
+		    </ul>
+		</form>
+	    </div>
+	    <div class="col-md-9 col-md-offset-3">
+		<div id="map-canvas" class="my-map">
+		</div>
+	    </div>
 	</div>
     </div>
 	<!--</div>-->
     <script src="js/libs/knockout-3.3.0.js"></script>
     <script src="js/libs/jquery.min.js"></script>
+    <script src="js/libs/bootstrap.min.js"></script>
+    <script src="js/libs/sidebar.js"></script>
+    <script src="http://maps.googleapis.com/maps/api/js?libraries=places"></script>
     <script src="js/app.js"></script>
 </body>
 </html>
