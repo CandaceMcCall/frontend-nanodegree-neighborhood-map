@@ -7,6 +7,10 @@ body {
     padding: 0;
 }
 
+.map-container {
+    padding-left: 0;
+}
+
 .my-map {
     position: absolute;
     width: 100%;
