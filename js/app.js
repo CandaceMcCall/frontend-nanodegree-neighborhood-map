@@ -7,14 +7,14 @@
  *
  * Revisions:
  *
- * Date		Description
- * 06/08/2015	Initial draft
- * 06/25/2015	Add snippet of code to when resizing window
- *		to set height of map
- *		Add use strict
- *		Open only one window at a time
- * 06/27/2015	Don't add urls to content string if null
- * 06/28/2015	Use setCenter rather than pan to marker position
+ * Date     Description
+ * 06/08/2015   Initial draft
+ * 06/25/2015   Add snippet of code to when resizing window
+ *              to set height of map
+ *              Add use strict
+ *              Open only one window at a time
+ * 06/27/2015   Don't add urls to content string if null
+ * 06/28/2015   Use setCenter rather than pan to marker position
  *
  *
  */
@@ -23,8 +23,8 @@
 /*
  * Declare global map variable
  */
-    var	map;    
-    var	listViewModel;    
+    var map;
+    var listViewModel;
 /*
 * Define bounds for map
 */
@@ -41,10 +41,10 @@
  *
  * Function:  createOfficeContent
  *
- * Creates the content string to use for MasterTools Software 
+ * Creates the content string to use for MasterTools Software
  * in popup window in GoogleMaps.
  *
- * Parameters:	    None
+ * Parameters:      None
  */
 function createOfficeContent() {
     var contentString = '<div id="content">'+
@@ -58,12 +58,12 @@ function createOfficeContent() {
  * Function:  showOfficeInfo
  *
  * Displays MasterTools Software Office info in GoogleMaps popup window.
- * Function is triggered when Office marker is clicked. 
+ * Function is triggered when Office marker is clicked.
  *
  * Parameters:
- *	marker		Marker 
- *	contentString	Content String to show in GoogleMaps
- *			popup window
+ *  marker          Marker
+ *  contentString   Content String to show in GoogleMaps
+ *                  popup window
  */
 function showOfficeInfo(marker,contentString) {
     /*
@@ -77,7 +77,7 @@ function showOfficeInfo(marker,contentString) {
     toggleBounce(marker);
     setTimeout(function(){ toggleBounce(marker); }, 1400);
     /*
-     * Set content string on GoogleMaps popup window 
+     * Set content string on GoogleMaps popup window
      */
     infoWindow.setContent(contentString);
     /*
@@ -93,23 +93,22 @@ function showOfficeInfo(marker,contentString) {
  * GoogleMaps.
  *
  * Parameters:
- *	restaurant	Restaurant object
+ *       restaurant  Restaurant object
  */
 function createRestaurantContent(restaurant) {
     var contentString = '<div id="content">'+
       '<h4>'+restaurant.name()+'</h4>'+
       '<p>'+restaurant.address()+
       '<br>'+restaurant.formattedPhone()+'</p>';
-    if (restaurant.url() != null) {
-	contentString = contentString.concat(
-	'<p><a href="'+restaurant.url()+'">Website</a></p>');
+    if (restaurant.url() !== null) {
+        contentString = contentString.concat(
+            '<p><a href="'+restaurant.url()+'">Website</a></p>');
     }
-    if (restaurant.menuUrl() !=null) {
-	contentString = contentString.concat(
-      '<p><a href="'+restaurant.menuUrl()+'">Menu</a></p>');
+    if (restaurant.menuUrl() !== null) {
+        contentString = contentString.concat(
+            '<p><a href="'+restaurant.menuUrl()+'">Menu</a></p>');
     }
-    contentString = contentString.concat(
-		    '<p>Info provided by FourSquare</p>');
+    contentString = contentString.concat('<p>Info provided by FourSquare</p>');
     contentString = contentString.concat('</div>');
     return contentString;
 }
@@ -118,12 +117,12 @@ function createRestaurantContent(restaurant) {
  *
  * Displays restaurant info in GoogleMaps popup window.
  * Function is triggered when restaurant marker is clicked or
- * restaurant is clicked in restaurant list view. 
+ * restaurant is clicked in restaurant list view.
  *
  * Parameters:
- *	marker		Marker 
- *	contentString	Content String to show in GoogleMaps
- *			popup window
+ *      marker          Marker
+ *      contentString   Content String to show in GoogleMaps
+ *                      popup window
  */
 function showRestaurantInfo(marker,contentString) {
     /*
@@ -137,7 +136,7 @@ function showRestaurantInfo(marker,contentString) {
     toggleBounce(marker);
     setTimeout(function(){ toggleBounce(marker); }, 1400);
     /*
-     * Set content string of GoogleMaps popup window 
+     * Set content string of GoogleMaps popup window
      */
     infoWindow.setContent(contentString);
     /*
@@ -149,27 +148,27 @@ function showRestaurantInfo(marker,contentString) {
  * Function: toggleBounce
  *
  * Parameters:
- *	marker	    Marker
+ *      marker      Marker
  */
 function toggleBounce(marker) {
     /*
      * Set the animating, stop it
      */
     if (marker.getAnimation() != null) {
-	marker.setAnimation(null);
+        marker.setAnimation(null);
     /*
      * Else animate with bounce
      */
     } else {
-	marker.setAnimation(google.maps.Animation.BOUNCE);
+        marker.setAnimation(google.maps.Animation.BOUNCE);
     }
 }
 /*
- * Function:	initializeMap
+ * Function:    initializeMap
  *
  * Initialize GoogleMap
  *
- * Parameters:	None
+ * Parameters:  None
  */
 function initializeMap() {
     /*
@@ -177,19 +176,19 @@ function initializeMap() {
      */
     var officeLatlng;
     try {
-	officeLatlng = new google.maps.LatLng(36.035433,-86.80515);
+        officeLatlng = new google.maps.LatLng(36.035433,-86.80515);
     } catch (e) {
-	listViewModel.errorMessage("Unable to load GoogleMaps");
-	return;
+        listViewModel.errorMessage("Unable to load GoogleMaps");
+        return;
     }
-	
+    
     var mapOptions = {
-	disableDefaultUI: true,
-	center: officeLatlng,
-	zoom: 15
+        disableDefaultUI: true,
+        center: officeLatlng,
+        zoom: 15
     };
     /* 
-     * Create Map with focus on MasterTools office.  Attach to 
+     * Create Map with focus on MasterTools office.  Attach to
      * <div id="map">
      */
     map = new google.maps.Map(document.querySelector('#map-canvas'), mapOptions);
@@ -199,18 +198,19 @@ function initializeMap() {
     var content_string = createOfficeContent();
 
     var marker = new google.maps.Marker({
-	position: officeLatlng,
-	map: map,
-	title: 'ONLINE Computing, Inc (home of MasterTools ERP Software)',
-	icon: 'images/mt.png'
+        position: officeLatlng,
+        map: map,
+        title: 'ONLINE Computing, Inc (home of MasterTools ERP Software)',
+        icon: 'images/mt.png'
     });
     /*
      * Add listener for marker
      */
-    google.maps.event.addListener(marker, 'click', (function(marker,content_string) {
-	return function() {
-	    showOfficeInfo(marker,content_string);
-	}
+    google.maps.event.addListener(marker, 'click', (
+        function(marker,content_string) {
+            return function() {
+                showOfficeInfo(marker,content_string);
+            };
     })(marker,content_string));
     /*
      * Now, let's initialize Four Square data model of nearby restaurants
@@ -228,64 +228,65 @@ var ViewModel = function() {
     self.errorMessage = ko.observable("");
     // Following for debugging
     //this.resultSearch = ko.computed(function() {
-	//return self.searchFilter();
+    //return self.searchFilter();
     //},this);
     self.getResultList = ko.computed(function() {
-	/*
-	 * If non-empty search filter, then filter
-	 * list
-	 */
-	var restaurantListLength = self.restaurantList().length;
-	if (self.searchFilter().length > 0 ) {
-	    /*
-	     * Hide all by setting show property to false
-	     */
-	    for (var i = 0; i < restaurantListLength; i++) {
-		self.restaurantList()[i].show(false);
-		self.restaurantList()[i].marker.setMap(null);
-	    }
-	    /*
-	     * Use ajax grep to get list of restaurants that match
-	     * filter
-	     */
-	    var filteredList = $.grep(self.restaurantList(), function(restaurant) {
-		var filter = self.searchFilter().toLowerCase();
-		return (restaurant.name().toLowerCase().indexOf(filter) != -1);
-	    });
-	    /*
-	     * There may be a more elegant way, but for each filtered item
-	     * set property show to true in observed restaurant array
-	     */
-	    var filteredListLength = filteredList.length;
-	    for (i = 0; i < filteredListLength; i++) {
-		for (var j = 0; j < restaurantListLength; j++) {
-		    /* 
-		     * Check that names match
-		     */
-		    if (filteredList[i].name() == self.restaurantList()[j].name()) {
-			self.restaurantList()[j].show(true);
-			self.restaurantList()[j].marker.setMap(map);
-		    }
-		}
-	    }
-	} else {
-	    /*
-	     * Show all by setting show property to true
-	     */
-	    for (var i = 0; i < restaurantListLength; i++) {
-		self.restaurantList()[i].show(true);
-		self.restaurantList()[i].marker.setMap(map);
-	    }
-	}
+        /*
+         * If non-empty search filter, then filter
+         * list
+         */
+        var restaurantListLength = self.restaurantList().length;
+        var i;
+        if (self.searchFilter().length > 0 ) {
+            /*
+             * Hide all by setting show property to false
+             */
+            for (i = 0; i < restaurantListLength; i++) {
+                self.restaurantList()[i].show(false);
+                self.restaurantList()[i].marker.setMap(null);
+            }
+            /*
+             * Use ajax grep to get list of restaurants that match
+             * filter
+             */
+            var filteredList = $.grep(self.restaurantList(), function(restaurant) {
+                var filter = self.searchFilter().toLowerCase();
+                return (restaurant.name().toLowerCase().indexOf(filter) != -1);
+            });
+            /*
+             * There may be a more elegant way, but for each filtered item
+             * set property show to true in observed restaurant array
+             */
+            var filteredListLength = filteredList.length;
+            for (i = 0; i < filteredListLength; i++) {
+                for (var j = 0; j < restaurantListLength; j++) {
+                    /* 
+                     * Check that names match
+                     */
+                    if (filteredList[i].name() == self.restaurantList()[j].name()) {
+                        self.restaurantList()[j].show(true);
+                        self.restaurantList()[j].marker.setMap(map);
+                    }
+                }
+            }
+        } else {
+            /*
+             * Show all by setting show property to true
+             */
+            for (i = 0; i < restaurantListLength; i++) {
+                self.restaurantList()[i].show(true);
+                self.restaurantList()[i].marker.setMap(map);
+            }
+        }
     });
     /*
      * Add listener if restaurant clicked
      */
     this.setRestaurant = function(clickedRestaurant) {
-	var content_string = createRestaurantContent(clickedRestaurant);
-	showRestaurantInfo(clickedRestaurant.marker,content_string);
+        var content_string = createRestaurantContent(clickedRestaurant);
+        showRestaurantInfo(clickedRestaurant.marker,content_string);
     };
-}
+};
 /*
  * Restaurant Model
  *
@@ -294,65 +295,65 @@ var ViewModel = function() {
 var model = {
     restaurantList: [],
     restaurant: function(name,address,crossStreet,latitude,longitude,
-		formattedPhone,url,menuUrl,mobileMenuUrl,distance) {
-	this.name = name;
-	this.address = address;
-	this.crossStreet = crossStreet;
-	this.latitude = latitude;
-	this.longitude = longitude;
-	this.formattedPhone = formattedPhone;
-	this.url = url;
-	this.menuUrl = menuUrl;
-	this.mobileMenuUrl = mobileMenuUrl;
-	this.distance = distance;
+        formattedPhone,url,menuUrl,mobileMenuUrl,distance) {
+        this.name = name;
+        this.address = address;
+        this.crossStreet = crossStreet;
+        this.latitude = latitude;
+        this.longitude = longitude;
+        this.formattedPhone = formattedPhone;
+        this.url = url;
+        this.menuUrl = menuUrl;
+        this.mobileMenuUrl = mobileMenuUrl;
+        this.distance = distance;
     },
     initialize: function(client_id,client_secret,latitude,longitude) {
-	var miles = 4;		// Look in 4 mile radius
-	var meters = miles * 1609.344;
-	var foursquareURL = 'https://api.foursquare.com/v2/venues/search' + 
-	    '?client_id=' + client_id +
-	    '&client_secret=' + client_secret +
-	    '&v=20150610' +
-	    '&ll=' + latitude + ',' + longitude +
-	    '&radius=' + meters +
-	    '&query=restaurant';
-	/*
-	 * Call FourSquare
-	 */
-	$.getJSON(foursquareURL, function (data) {
-	    var restaurants = data.response.venues;
-	    var restaurantsLength = restaurants.length;
-	    for (var i = 0; i < restaurantsLength; i++) {
-		var foursquareRestaurant = restaurants[i];
-		var menuURL = '';
-		var mobileMenuURL = '';
-		if (foursquareRestaurant.hasMenu == true) {
-		    menuURL = foursquareRestaurant.menu.url;
-		    mobileMenuURL = foursquareRestaurant.menu.mobileUrl;
-		}
-		/*
-		 * Check distance from home office
-		 */
-		    model.restaurantList.push(new model.restaurant(
-			foursquareRestaurant.name,
-			foursquareRestaurant.location.address,
-			foursquareRestaurant.location.crossStreet,
-			foursquareRestaurant.location.lat,
-			foursquareRestaurant.location.lng,
-			foursquareRestaurant.contact.formattedPhone,
-			foursquareRestaurant.url,
-			menuURL,
-			mobileMenuURL,
-			foursquareRestaurant.location.distance));
-	    };
-	    model.restaurantList.forEach(function(restaurantItem) {
-		listViewModel.restaurantList.push(new Restaurant(restaurantItem));
-	    });
-	}).error(function(e) {
-	    listViewModel.errorMessage('FourSquare search could not be executed');
-	});
+        var miles = 4;      // Look in 4 mile radius
+        var meters = miles * 1609.344;
+        var foursquareURL = 'https://api.foursquare.com/v2/venues/search' +
+            '?client_id=' + client_id +
+            '&client_secret=' + client_secret +
+            '&v=20150610' +
+            '&ll=' + latitude + ',' + longitude +
+            '&radius=' + meters +
+            '&query=restaurant';
+        /*
+         * Call FourSquare
+         */
+        $.getJSON(foursquareURL, function (data) {
+            var restaurants = data.response.venues;
+            var restaurantsLength = restaurants.length;
+            for (var i = 0; i < restaurantsLength; i++) {
+                var foursquareRestaurant = restaurants[i];
+                var menuURL = '';
+                var mobileMenuURL = '';
+                if (foursquareRestaurant.hasMenu === true) {
+                    menuURL = foursquareRestaurant.menu.url;
+                    mobileMenuURL = foursquareRestaurant.menu.mobileUrl;
+                }
+                /*
+                 * Check distance from home office
+                 */
+                    model.restaurantList.push(new model.restaurant(
+                        foursquareRestaurant.name,
+                        foursquareRestaurant.location.address,
+                        foursquareRestaurant.location.crossStreet,
+                        foursquareRestaurant.location.lat,
+                        foursquareRestaurant.location.lng,
+                        foursquareRestaurant.contact.formattedPhone,
+                        foursquareRestaurant.url,
+                        menuURL,
+                        mobileMenuURL,
+                        foursquareRestaurant.location.distance));
+                }
+                model.restaurantList.forEach(function(restaurantItem) {
+                     listViewModel.restaurantList.push(new Restaurant(restaurantItem));
+                });
+            }).error(function(e) {
+                listViewModel.errorMessage('FourSquare search could not be executed');
+        });
     }
-}
+};
 /*
  * Restaurant View
  */
@@ -360,9 +361,9 @@ var Restaurant = function(data) {
     this.name = ko.observable(data.name);
     this.show = ko.observable(true);
     this.marker = new google.maps.Marker({
-	position: new google.maps.LatLng(data.latitude,data.longitude),
-	map: map,
-	title: data.name
+        position: new google.maps.LatLng(data.latitude,data.longitude),
+        map: map,
+        title: data.name
     });
     this.address = ko.observable(data.address);
     // Future
@@ -376,9 +377,9 @@ var Restaurant = function(data) {
     this.menuUrl = ko.observable(data.menuUrl);
     var content_string = createRestaurantContent(this);
     google.maps.event.addListener(this.marker, 'click', (function(marker,content_string) {
-	return function() {
-	    showRestaurantInfo(marker,content_string);
-	}
+        return function() {
+            showRestaurantInfo(marker,content_string);
+        };
     })(this.marker,content_string));
     /*
      * bounds.extend() takes in a map location object
@@ -393,7 +394,7 @@ var Restaurant = function(data) {
      * center the map
      */
     map.setCenter(bounds.getCenter());
-}
+};
 /*
  * Initialize map when page loads.
  */
@@ -438,11 +439,11 @@ function initializeFourSquare() {
     /*
      * Make sure the map bounds get updated on page resize
      */
-	map.fitBounds(mapBounds);
+    map.fitBounds(window.mapBounds);
     });
     $(window).resize(function () {
-	var h = $(window).height(),
-	    offsetTop = 0; // Calculate the top offset
-	$('#map-canvas').css('height', (h - offsetTop));
+        var h = $(window).height(),
+        offsetTop = 0; // Calculate the top offset
+        $('#map-canvas').css('height', (h - offsetTop));
     }).resize();
 
